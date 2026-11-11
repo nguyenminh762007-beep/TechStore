@@ -1,0 +1,51 @@
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Thay bằng thông tin Firebase của bạn
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Thêm sản phẩm
+export async function addProduct(name, price, image) {
+  return await addDoc(collection(db, "products"), {
+    name,
+    price,
+    image,
+    createdAt: new Date()
+  });
+}
+
+// Lấy danh sách sản phẩm
+export async function getProducts() {
+  const snapshot = await getDocs(collection(db, "products"));
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+}
+
+// Thêm đơn hàng
+export async function addOrder(name, phone, total) {
+  return await addDoc(collection(db, "orders"), {
+    name,
+    phone,
+    total,
+    createdAt: new Date()
+  });
+}
