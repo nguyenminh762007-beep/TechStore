@@ -66,13 +66,50 @@ const products = [
     }
 ];
 
-let cart = [];
+const cartStorageKey = "techstore-cart";
+let cart = loadCart();
 let selectedCategory = "Tất cả";
 
 const money = value =>
     value.toLocaleString("vi-VN") + " ₫";
 
+function loadCart() {
+    const savedCart = localStorage.getItem(cartStorageKey);
+    if (!savedCart) return [];
+
+    try {
+        const parsedCart = JSON.parse(savedCart);
+        if (!Array.isArray(parsedCart)) {
+            throw new TypeError("Dữ liệu giỏ hàng không hợp lệ.");
+        }
+
+        return parsedCart.reduce((items, savedItem) => {
+            const product = products.find(item => item.id === savedItem.id);
+            const quantity = Number(savedItem.quantity);
+
+            if (product && Number.isInteger(quantity) && quantity > 0) {
+                items.push({ ...product, quantity });
+            }
+
+            return items;
+        }, []);
+    } catch (error) {
+        console.error("Không thể đọc dữ liệu giỏ hàng đã lưu:", error);
+        return [];
+    }
+}
+
+function saveCart() {
+    localStorage.setItem(
+        cartStorageKey,
+        JSON.stringify(cart.map(({ id, quantity }) => ({ id, quantity })))
+    );
+}
+
 function renderProducts() {
+    const productList = document.getElementById("product-list");
+    if (!productList) return;
+
     const keyword = document
         .getElementById("search")
         .value.trim().toLowerCase();
@@ -89,7 +126,7 @@ function renderProducts() {
         return matchName && matchCategory;
     });
 
-    document.getElementById("product-list").innerHTML =
+    productList.innerHTML =
         filtered.map(product => `
             <article class="product-card">
                 <div class="product-image">${product.icon}</div>
@@ -119,6 +156,7 @@ function addToCart(id) {
         cart.push({ ...product, quantity: 1 });
     }
 
+    saveCart();
     renderCart();
     showToast("Đã thêm sản phẩm vào giỏ hàng!");
 }
@@ -133,11 +171,13 @@ function changeQuantity(id, amount) {
         cart = cart.filter(item => item.id !== id);
     }
 
+    saveCart();
     renderCart();
 }
 
 function removeFromCart(id) {
     cart = cart.filter(item => item.id !== id);
+    saveCart();
     renderCart();
 }
 
@@ -150,43 +190,56 @@ function renderCart() {
         (sum, item) => sum + item.price * item.quantity, 0
     );
 
-    document.getElementById("cart-count").textContent = count;
-    document.getElementById("cart-total").textContent = money(total);
+    const cartCount = document.getElementById("cart-count");
+    const cartTotal = document.getElementById("cart-total");
+    const cartItems = document.getElementById("cart-items");
+    const checkoutButton = document.querySelector(
+        "#checkout-form button[type='submit']"
+    );
 
-    document.getElementById("cart-items").innerHTML =
+    if (cartCount) cartCount.textContent = count;
+    if (cartTotal) cartTotal.textContent = money(total);
+    if (checkoutButton) checkoutButton.disabled = cart.length === 0;
+    if (!cartItems) return;
+
+    cartItems.innerHTML =
         cart.length === 0
-            ? "<p>Giỏ hàng đang trống.</p>"
+            ? `<div class="empty-cart">
+                   <p>Giỏ hàng đang trống.</p>
+                   <a href="index.html#products" class="primary-button">
+                       Khám phá sản phẩm
+                   </a>
+               </div>`
             : cart.map(item => `
                 <div class="cart-item">
-                    <div>
+                    <div class="cart-product">
+                        <div class="cart-product-image">${item.icon}</div>
+                        <div>
                         <strong>${item.name}</strong>
-                        <p>${money(item.price)} / sản phẩm</p>
+                            <p>${money(item.price)} / sản phẩm</p>
+                            <strong class="cart-line-total">
+                                ${money(item.price * item.quantity)}
+                            </strong>
+                        </div>
                     </div>
                     <div class="quantity">
                         <button data-minus="${item.id}"
-                            aria-label="Giảm số lượng">−</button>
-                        <span>${item.quantity}</span>
+                            aria-label="Giảm số lượng ${item.name}">−</button>
+                        <span aria-label="Số lượng">${item.quantity}</span>
                         <button data-plus="${item.id}"
-                            aria-label="Tăng số lượng">+</button>
+                            aria-label="Tăng số lượng ${item.name}">+</button>
                         <button class="remove-button"
-                            data-remove="${item.id}">Xóa</button>
+                            data-remove="${item.id}"
+                            aria-label="Xóa ${item.name}">Xóa</button>
                     </div>
                 </div>
             `).join("");
 }
 
-function toggleCart() {
-    const panel = document.getElementById("cart-panel");
-    panel.hidden = !panel.hidden;
-
-    if (!panel.hidden) {
-        renderCart();
-        panel.scrollIntoView({ behavior: "smooth" });
-    }
-}
-
 function showToast(message) {
     const toast = document.getElementById("toast");
+    if (!toast) return;
+
     toast.textContent = message;
     toast.style.display = "block";
 
@@ -227,13 +280,15 @@ document.addEventListener("click", event => {
     }
 });
 
-document.getElementById("search").addEventListener(
-    "input", renderProducts
-);
+const searchInput = document.getElementById("search");
+if (searchInput) {
+    searchInput.addEventListener("input", renderProducts);
+}
 
 // Đặt hàng mô phỏng, chưa lưu vào cơ sở dữ liệu
-document.getElementById("checkout-form").addEventListener(
-    "submit", event => {
+const checkoutForm = document.getElementById("checkout-form");
+if (checkoutForm) {
+    checkoutForm.addEventListener("submit", event => {
         event.preventDefault();
 
         if (cart.length === 0) {
@@ -258,10 +313,11 @@ document.getElementById("checkout-form").addEventListener(
         );
 
         cart = [];
+        saveCart();
         renderCart();
         form.reset();
-    }
-);
+    });
+}
 
 renderProducts();
 renderCart();

@@ -15,9 +15,9 @@
             <a href="#products">Sản phẩm</a>
             <a href="#footer">Liên hệ</a>
         </nav>
-        <button class="cart-button" onclick="toggleCart()">
+        <a class="cart-button" href="cart.html">
             🛒 Giỏ hàng (<span id="cart-count">0</span>)
-        </button>
+        </a>
     </header>
 
     <main>
@@ -59,28 +59,6 @@
             <p id="empty-message" hidden>Không tìm thấy sản phẩm phù hợp.</p>
         </section>
 
-        <section id="cart-panel" class="cart-panel" hidden>
-            <div class="cart-heading">
-                <h2>Giỏ hàng của bạn</h2>
-                <button onclick="toggleCart()" class="close-button">✕</button>
-            </div>
-            <div id="cart-items"></div>
-            <div class="cart-total">
-                <span>Tổng cộng</span>
-                <strong id="cart-total">0 ₫</strong>
-            </div>
-            <form id="checkout-form">
-                <input name="customer" placeholder="Họ và tên"
-                       required maxlength="100">
-                <input name="phone" placeholder="Số điện thoại"
-                       type="tel" required pattern="[0-9]{10,11}"
-                       title="Nhập số điện thoại gồm 10 hoặc 11 chữ số">
-                <button class="primary-button" type="submit">
-                    Đặt hàng thử nghiệm
-                </button>
-            </form>
-            <p class="note">Đây là bản demo, chưa gửi đơn hàng lên máy chủ.</p>
-        </section>
     </main>
 
     <footer id="footer">
