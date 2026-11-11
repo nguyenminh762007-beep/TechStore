@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Cửa hàng công nghệ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">TechStore<span>.</span></a>
+        <nav>
+            <a href="#home">Trang chủ</a>
+            <a href="#products">Sản phẩm</a>
+            <a href="#footer">Liên hệ</a>
+        </nav>
+        <button class="cart-button" onclick="toggleCart()">
+            🛒 Giỏ hàng (<span id="cart-count">0</span>)
+        </button>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div>
+                <p class="eyebrow">CÔNG NGHỆ CHÍNH HÃNG</p>
+                <h1>Nâng cấp trải nghiệm<br>công nghệ của bạn.</h1>
+                <p>Khám phá những sản phẩm công nghệ mới nhất
+                   với mức giá hấp dẫn.</p>
+                <a href="#products" class="primary-button">
+                    Mua sắm ngay →
+                </a>
+            </div>
+            <div class="hero-icon">💻</div>
+        </section>
+
+        <section class="products-section" id="products">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">BỘ SƯU TẬP</p>
+                    <h2>Sản phẩm nổi bật</h2>
+                </div>
+                <input
+                    id="search"
+                    type="search"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    aria-label="Tìm kiếm sản phẩm"
+                >
+            </div>
+
+            <div class="categories">
+                <button class="category active" data-category="Tất cả">Tất cả</button>
+                <button class="category" data-category="Laptop">Laptop</button>
+                <button class="category" data-category="Điện thoại">Điện thoại</button>
+                <button class="category" data-category="Phụ kiện">Phụ kiện</button>
+            </div>
+
+            <div id="product-list" class="product-grid"></div>
+            <p id="empty-message" hidden>Không tìm thấy sản phẩm phù hợp.</p>
+        </section>
+
+        <section id="cart-panel" class="cart-panel" hidden>
+            <div class="cart-heading">
+                <h2>Giỏ hàng của bạn</h2>
+                <button onclick="toggleCart()" class="close-button">✕</button>
+            </div>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                <span>Tổng cộng</span>
+                <strong id="cart-total">0 ₫</strong>
+            </div>
+            <form id="checkout-form">
+                <input name="customer" placeholder="Họ và tên"
+                       required maxlength="100">
+                <input name="phone" placeholder="Số điện thoại"
+                       type="tel" required pattern="[0-9]{10,11}"
+                       title="Nhập số điện thoại gồm 10 hoặc 11 chữ số">
+                <button class="primary-button" type="submit">
+                    Đặt hàng thử nghiệm
+                </button>
+            </form>
+            <p class="note">Đây là bản demo, chưa gửi đơn hàng lên máy chủ.</p>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <h2>TechStore.</h2>
+        <p>Cửa hàng công nghệ dành cho mọi người.</p>
+        <p>© 2026 TechStore - Bài tập môn Phát triển ứng dụng web.</p>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+</body>
+</html>
