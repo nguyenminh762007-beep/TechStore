@@ -5,10 +5,13 @@ import {
   getFirestore,
   collection,
   addDoc,
-  getDocs
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Thay bằng thông tin Firebase của bạn
+// Firebase Config
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -21,12 +24,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Thêm sản phẩm
-export async function addProduct(name, price, image) {
+// Thêm sản phẩm điện tử
+export async function addProduct(name, price, image, category, description, stock) {
   return await addDoc(collection(db, "products"), {
     name,
-    price,
+    price: Number(price),
     image,
+    category,
+    description,
+    stock: Number(stock),
     createdAt: new Date()
   });
 }
@@ -34,18 +40,43 @@ export async function addProduct(name, price, image) {
 // Lấy danh sách sản phẩm
 export async function getProducts() {
   const snapshot = await getDocs(collection(db, "products"));
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
+
+  return snapshot.docs.map(item => ({
+    id: item.id,
+    ...item.data()
   }));
 }
 
-// Thêm đơn hàng
-export async function addOrder(name, phone, total) {
+// Cập nhật sản phẩm
+export async function updateProduct(id, data) {
+  return await updateDoc(doc(db, "products", id), data);
+}
+
+// Xóa sản phẩm
+export async function deleteProduct(id) {
+  return await deleteDoc(doc(db, "products", id));
+}
+
+// Tạo đơn hàng
+export async function addOrder(name, phone, address, products, total) {
   return await addDoc(collection(db, "orders"), {
-    name,
+    customerName: name,
     phone,
-    total,
+    address,
+    products,
+    total: Number(total),
+    status: "Chờ xác nhận",
     createdAt: new Date()
   });
 }
+
+// Lấy danh sách đơn hàng
+export async function getOrders() {
+  const snapshot = await getDocs(collection(db, "orders"));
+
+  return snapshot.docs.map(item => ({
+    id: item.id,
+    ...item.data()
+  }));
+}
+
