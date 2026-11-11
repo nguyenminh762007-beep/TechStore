@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Online</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial;margin:0;background:#f4f4f4}
+header{background:#222;color:white;padding:20px;text-align:center}
+nav{background:#444;padding:12px;text-align:center}
+nav a{color:white;margin:15px;text-decoration:none}
+.container{padding:25px;display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.product{background:white;width:220px;padding:15px;text-align:center;border-radius:10px;box-shadow:0 2px 8px #ccc}
+.product img{width:100%;height:150px;object-fit:cover}
+button{background:#ff5722;color:white;border:0;padding:10px 15px;border-radius:5px;cursor:pointer}
+button:hover{background:#e64a19}
+footer{background:#222;color:white;text-align:center;padding:15px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>SHOP ONLINE</h1>
+<p>Chào mừng bạn đến với cửa hàng!</p>
+</header>
+
+<nav>
+<a href="#">Trang chủ</a>
+<a href="#products">Sản phẩm</a>
+<a href="#contact">Liên hệ</a>
+</nav>
+
+<h2 style="text-align:center">SẢN PHẨM NỔI BẬT</h2>
+
+<div class="container" id="products">
+
+<div class="product">
+<img src="https://picsum.photos/300/200?1">
+<h3>Áo thun</h3>
+<p>150.000đ</p>
+<button onclick="addCart('Áo thun')">Mua ngay</button>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/300/200?2">
+<h3>Giày thể thao</h3>
+<p>450.000đ</p>
+<button onclick="addCart('Giày thể thao')">Mua ngay</button>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/300/200?3">
+<h3>Balo</h3>
+<p>250.000đ</p>
+<button onclick="addCart('Balo')">Mua ngay</button>
+</div>
+
+</div>
+
+<h3 style="text-align:center" id="cart">Giỏ hàng: 0 sản phẩm</h3>
+
+<footer id="contact">
+<p>Liên hệ: shoponline@gmail.com</p>
+<p>© 2026 Shop Online</p>
+</footer>
+
+<script>
+let cart = 0;
+
+function addCart(name){
+cart++;
+document.getElementById("cart").innerText =
+"Giỏ hàng: " + cart + " sản phẩm";
+alert("Đã thêm " + name + " vào giỏ hàng!");
+}
+</script>
+
+</body>
+</html>
