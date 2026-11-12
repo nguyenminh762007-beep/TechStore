@@ -157,8 +157,7 @@ function addToCart(id) {
     }
 
     saveCart();
-    renderCart();
-    showToast("Đã thêm sản phẩm vào giỏ hàng!");
+    window.location.href = "cart.html";
 }
 
 function changeQuantity(id, amount) {
